@@ -1,0 +1,39 @@
+% DefCrypt main.tex
+% Started 4/2/2017
+
+\documentclass[11pt,twoside]{article}
+
+% ==================================================================
+% Subfile Package/Commands
+% ==================================================================
+
+\usepackage{subfiles}
+
+\newcommand{\onlyinsubfile}[1]{#1}
+\newcommand{\notinsubfile}[1]{}
+
+\makeatletter
+\def\input@path{{./}{../../}}
+\makeatother
+
+% ==================================================================
+% Crypto Packages
+% ==================================================================
+
+\usepackage{defcrypt}
+\usepackage{cryptocode}
+
+
+% ==================================================================
+% Document
+% ==================================================================
+
+\begin{document}
+    \renewcommand{\onlyinsubfile}[1]{}
+    \renewcommand{\notinsubfile}[1]{#1}
+  
+\section{$\schemefont{AONT}$}
+
+\appendix
+
+\end{document}
