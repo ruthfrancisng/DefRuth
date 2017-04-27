@@ -60,10 +60,11 @@ The correctness condition for $\schemefont{AONT}$ is $$\Prob{\schemefont{AONT.In
 
 Now we can define the following security game:
 
+\pagebreak
 \begin{figure}[h]
 \oneCol{0.5}
 {
-\underline{$\gamefont{G}_{\schemefont{AONT}}^\text{aont}(\advA)$}
+\underline{$\gamefont{G}_{\schemefont{AONT}}^\text{ind}(\advA)$}
 
 \begin{algorithm}[H]
 $b \getsr \bits$\\
@@ -102,11 +103,10 @@ $y\getsr \schemefont{AONT.Transform}(n_1,n_2\dots n_s)$\\
 }
 \end{figure}
 
-\pagebreak
 
 Then we say that the AONT indistinguishability advantage of an $\advA$ is given by: 
 
-$$\textbf{Adv}^\text{aont}_\schemefont{AONT}(\advA)=2\cdot\Prob{\gamefont{G}_{\schemefont{AONT}}^\text{aont}(\advA)} - 1$$
+$$\textbf{Adv}^\text{aont}_\schemefont{AONT}(\advA)=2\cdot\Prob{\gamefont{G}_{\schemefont{AONT}}^\text{ind}(\advA)} - 1$$
 
 \subsection{Package Transform}
 
@@ -153,8 +153,45 @@ $m_i\gets E(K',i)\oplus m'_i$\\
 \end{algorithm}
 }
 \end{figure} 
-\pagebreak
 No proof is provided as to the security of this scheme. The phrasing of the ``informal'' proof also seems problematic because it talks about an adversary that is attempting to ``compute any message block'' instead of any function of any message block, which is not the same as was suggested by the definition.
+
+\pagebreak 
+
+\section{Boyko (1999)}
+
+\subsection{Overview and Important Notes} 
+
+Boyko presents the first formal security notion for AONTs, making some changes to the one implied by Rivest. Some of these choices are justified, and some seem confusing and unsubstantiated. 
+
+First, he claims that Rivest's definition only considers adversaries who can learn information about a particular message block, instead of learning information about the message as a whole. He also claims that Rivest's model does not quantify the number of bits of the AONT output the adversary has explicitly in the security definition. I think that the first claim is valid, but is solvable through a small change to the above definition. The second claim I think is not really relevant to the study of AONT, and if we change our vantage point on this, it is just a question of where the ``blocks'' are and what size they are. However, I'm open to discussion about this. 
+
+Second, he proposes notions of secuirty based on both adaptive and non-adaptive models, and both semantic security and indistinguishability based definitions. He doesn't explain why there is a need for so many of these, and which ones imply which ones. I think this is interesting and worth looking at. 
+
+Finally, the key contribution of this paper (in my opinion) is showing that OAEP is usable in the package transform proposed by Rivest in order to achieve an AONT. With all of the above in mind, I would like to show that this construction still provides the security guarantees that Boyko claims, under the security definition of Rivest (which is quoted much more often in literature). 
+
+\subsection{Commentary on Boyko's critique of Rivest (1997)}
+
+Boyko lists two major ``problems'' with the Rivest definition. To me, while the Rivest definition was not explicitly spelt out in a security game, is intuitive and plenty sufficient to discuss AONTs. Especially since many application papers (like all those I study), use the Rivest definition, there are clear benefits to try to show the rest of Boyko's claims using the Rivest definition. 
+
+The first of Boyko's claims is that we would want our AONT to be secure against an adversary that is trying to compute some information about the message as a whole, instead of an adversary that is trying to compute some information about one particular message block. Since the former adversary is more general, Boyko claims it would make for a better definition. Note that the analogous definition suggested by this comment of Boyko's would allow the adversary to pick the entire message instead of picking just one block of the message in the game $\gamefont{G}_{\schemefont{AONT}}^\text{ind}$ above. The oracle suggested by Boyko will just skip over the random generation of the other blocks done by $\LRO$ above, and proceed similarly. Then, consider any adversary $A$ against $\gamefont{G}_{\schemefont{AONT}}^\text{ind}$ as defined by Rivest. Notice that we can trivially generate adversary $A'$ against the analogous game suggested by Boyko's comment here. $A'$ will simply take any pair of blocks queried by $A$ and randomly generate the remaining blocks, before passing it to the Boyko oracle analogous to $\LRO$. Therefore, if we have an attack agaisnt Rivest's model, we have an attack against Boyko's model. This means that if a scheme is an AONT by Boyko's model, it is also an AONT by Rivest's model. This shows that Boyko's claim is true. 
+
+More informally (this was contributed by Igors) an adversary may be able to compute a function about the message has a whole without knowing anything about any particular block (e.g. if the first block is equal to the second block). Therefore, Boyko's definition is stronger. 
+
+The second of Boyko's claims is that Rivest's definition does not allow for analysis of the relation between the number of bits of AONT output that the adversary has and the information that is leaked about the input. I find this comment very strange since the whole point of AONTs is that no matter how many bits of information is given to the adversary, so long as there is one block that is not accessible to the adversary, it is still computationally infeasible for the adversary to predict any information about the message sequence better than if he randomly guesses. Boyko's paper suggests that instead of stipulating that there must exist a block that the adversary knows nothing about, that we should consider what the adversary's advantage is with respect to the number of bits that were not leaked. This means studying the advantage of adversaries for varying values of $l$, where the adversary is given all but $l$ bits of the pseudo-message. 
+
+Both of these comments are definitely valid. I believe that Rivest's definition considers the cryptanalysis of AONT in a more traditional sense, where the encrypted data is being stored as blocks, or being communicated over a secure channel as blocks. The adversary would then capture or steal entire blocks of the pseudomessage. However, Boyko's definition encompasses more current forms of cryptanalysis, such as side channel attacks, which may leak partial blocks of data. However, since most papers studying constructions and applications of AONT do make use of Rivest's definition, I think there is value in using Rivest's definition as the standard. In addition, I think that intuitively an ``all-or-nothing-transform'' should have the security properties suggested by Rivest even if the message sequence and pseudomessage sequence is permuted. In fact, I think that we can show that: 
+
+\begin{definition}
+We call a scheme $\schemefont{AONT}$ a strong-AONT if, for all $f:\{\bits^\schemefont{AONT.bl}\}\rightarrow\{\bits^\schemefont{AONT.bl}\}$ that define permutations on strings, $(f\circ\schemefont{AONT.Transform},\schemefont{AONT.Inverse}\circ f^{-1})$ is an AONT by Rivest's definition. 
+\end{definition}
+
+I conjecture that the following is true
+
+\begin{theorem}
+A scheme is secure with respect to Boyko's definition (adaptive indistinguishability), for any leakage up to $\schemefont{AONT.bl}$ bits if and only if it is a strong-AONT
+\end{theorem}
+
+This shows some equivalence between the two definitions.
 
 \appendix
 
