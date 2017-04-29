@@ -161,19 +161,17 @@ No proof is provided as to the security of this scheme. The phrasing of the ``in
 
 \subsection{Overview and Important Notes} 
 
-Boyko presents the first formal security notion for AONTs, making some changes to the one implied by Rivest. Some of these choices are justified, and some seem confusing and unsubstantiated. 
+Boyko presents the first formal security notion for AONTs, making some changes to the one implied by Rivest. Some of these choices are justified, and some seem less so. 
 
-First, he claims that Rivest's definition only considers adversaries who can learn information about a particular message block, instead of learning information about the message as a whole. He also claims that Rivest's model does not quantify the number of bits of the AONT output the adversary has explicitly in the security definition. I think that the first claim is valid, but is solvable through a small change to the above definition. The second claim I think is not really relevant to the study of AONT, and if we change our vantage point on this, it is just a question of where the ``blocks'' are and what size they are. However, I'm open to discussion about this. 
+He proposes notions of secuirty based on both adaptive and non-adaptive models, and both semantic security and indistinguishability based definitions. He doesn't explain why there is a need for so many of these, and which ones imply which ones. I think this is interesting and worth looking at. 
 
-Second, he proposes notions of secuirty based on both adaptive and non-adaptive models, and both semantic security and indistinguishability based definitions. He doesn't explain why there is a need for so many of these, and which ones imply which ones. I think this is interesting and worth looking at. 
-
-Finally, the key contribution of this paper (in my opinion) is showing that OAEP is usable in the package transform proposed by Rivest in order to achieve an AONT. With all of the above in mind, I would like to show that this construction still provides the security guarantees that Boyko claims, under the security definition of Rivest (which is quoted much more often in literature). 
+Finally, the key contribution of this paper (in my opinion) is showing that OAEP is usable in the package transform proposed by Rivest in order to achieve an AONT. With all of the above in mind, I would like to show explicitly that this construction still provides the security guarantees that Boyko claims, under the security definition of Rivest (which is quoted much more often in literature). 
 
 \subsection{Commentary on Boyko's critique of Rivest (1997)}
 
 Boyko lists two major ``problems'' with the Rivest definition. To me, while the Rivest definition was not explicitly spelt out in a security game, is intuitive and plenty sufficient to discuss AONTs. Especially since many application papers (like all those I study), use the Rivest definition, there are clear benefits to try to show the rest of Boyko's claims using the Rivest definition. 
 
-The first of Boyko's claims is that we would want our AONT to be secure against an adversary that is trying to compute some information about the message as a whole, instead of an adversary that is trying to compute some information about one particular message block. Since the former adversary is more general, Boyko claims it would make for a better definition. Note that the analogous definition suggested by this comment of Boyko's would allow the adversary to pick the entire message instead of picking just one block of the message in the game $\gamefont{G}_{\schemefont{AONT}}^\text{ind}$ above. The oracle suggested by Boyko will just skip over the random generation of the other blocks done by $\LRO$ above, and proceed similarly. Then, consider any adversary $A$ against $\gamefont{G}_{\schemefont{AONT}}^\text{ind}$ as defined by Rivest. Notice that we can trivially generate adversary $A'$ against the analogous game suggested by Boyko's comment here. $A'$ will simply take any pair of blocks queried by $A$ and randomly generate the remaining blocks, before passing it to the Boyko oracle analogous to $\LRO$. Therefore, if we have an attack agaisnt Rivest's model, we have an attack against Boyko's model. This means that if a scheme is an AONT by Boyko's model, it is also an AONT by Rivest's model. This shows that Boyko's claim is true. 
+The first of Boyko's claims is that we would want our AONT to be secure against an adversary that is trying to compute some information about the message as a whole, instead of an adversary that is trying to compute some information about one particular message block. Since the former adversary is more general, Boyko claims it would make for a better definition. Note that the analogous definition suggested by this comment of Boyko's would allow the adversary to pick the entire message instead of picking just one block of the message in the game $\gamefont{G}_{\schemefont{AONT}}^\text{ind}$ above. The oracle suggested by Boyko will just skip over the random generation of the other blocks done by $\LRO$ above, and proceed similarly. Then, consider any adversary $A$ against $\gamefont{G}_{\schemefont{AONT}}^\text{ind}$ as defined by Rivest. Notice that we can trivially generate adversary $A'$ against the analogous game suggested by Boyko's comment here. $A'$ will simply take any pair of blocks queried by $A$ and randomly generate the remaining blocks, before passing it to the Boyko oracle analogous to $\LRO$. Therefore, if we have an attack against Rivest's model, we have an attack against Boyko's model. This means that if a scheme is an AONT by Boyko's model, it is also an AONT by Rivest's model. This shows that Boyko's claim is true. 
 
 More informally (this was contributed by Igors) an adversary may be able to compute a function about the message has a whole without knowing anything about any particular block (e.g. if the first block is equal to the second block). Therefore, Boyko's definition is stronger. 
 
@@ -193,6 +191,11 @@ A scheme is secure with respect to Boyko's definition (adaptive indistinguishabi
 
 This shows some equivalence between the two definitions.
 
+\subsection{Other comments} 
+
+I don't understand why Boyko feels the need to include both indistinguishability and simulation based security definitions. I think that we can prove which one is a stronger claim and move forward with a limited subset of these. 
+
+Boyko does present an important result which is to use OAEP in the design of the package transform algorithm. I would like to give an explicit proof (without making use of Boyko's definition) that this still works with Rivest's definition. 
 \appendix
 
 \end{document}

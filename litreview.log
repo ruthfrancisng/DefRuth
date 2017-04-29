@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.12.5)  24 APR 2017 18:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.12.5)  27 APR 2017 12:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1188,9 +1188,6 @@ cmr/m/n/10.95 spec-i-fies two al-go-rithms $([]\OML/cmm/m/it/10.95 ; []\OT1/cmr
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [1
@@ -1207,7 +1204,15 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2]
-[3] (./litreview.aux) )
+[3]
+Overfull \hbox (20.84448pt too wide) in paragraph at lines 183--184
+[]\OT1/cmr/m/it/10.95 We call a scheme $[]$ a strong-AONT if, for all $\OML/cmm
+/m/it/10.95 f \OT1/cmr/m/n/10.95 : \OMS/cmsy/m/n/10.95 ff\OT1/cmr/m/n/10.95 0\O
+ML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 1\OMS/cmsy/m/n/10.95 g[]g ! ff\OT1/cmr/m
+/n/10.95 0\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 1\OMS/cmsy/m/n/10.95 g[]g$
+ []
+
+[4] (./litreview.aux) )
 (\end occurred inside a group at level 1)
 
 ### simple group (level 1) entered at line 1061 ({)
@@ -1239,10 +1244,10 @@ al/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local
 /texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/t
 exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/tex
 live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on litreview.pdf (3 pages, 186319 bytes).
+Output written on litreview.pdf (4 pages, 200185 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
- 76 compressed objects within 1 object stream
+ 120 PDF objects out of 1000 (max. 8388607)
+ 78 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  109 words of extra memory for PDF output out of 10000 (max. 10000000)
 
