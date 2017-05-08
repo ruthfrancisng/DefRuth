@@ -40,7 +40,145 @@ The correctness condition for $\schemefont{AONT}$ is $$\Prob{\schemefont{AONT.In
 
 \section{Rivest (1997)}
 
+\begin{figure}[H]
+\oneCol{0.5}
+{
+\underline{$\gamefont{G}_{\mathsf{AONT}}^\text{ind}(\advA)$}
+
+\begin{algorithm}[H]
+$b \getsr \bits$\\
+$b' \getsr \advA^{\LRO}$\\
+\Return $(b=b')$
+\end{algorithm}
+
+\smallskip
+\underline{$\LRO(M,N,i)$}
+
+\begin{algorithm}[H]
+\If{$|M|\neq|N|$}{\Return $\bot$}  
+$(m_1,m_2\dots m_s)\gets M$\\
+$(n_1,n_2\dots n_s)\gets N$\\
+$n_i\gets \epsilon$\\
+$m_i\gets \epsilon$\\
+\eIf{$b=0$}{
+$y\getsr \mathsf{AONT.Transform}(m_1,m_2\dots m_s)$\\
+}{
+$y\getsr \mathsf{AONT.Transform}(n_1,n_2\dots n_s)$\\
+}
+\Return $y$
+\end{algorithm}
+}
+\end{figure}
+
+Then we say that the indistinguishability adversary $\advA$ has $l$-AONT-IND advantage: 
+
+$$\textbf{Adv}^\text{aont-ind}_\mathsf{AONT}(\advA)=2\cdot\Prob{\gamefont{G}_{\mathsf{AONT}}^\text{ind}(\advA)} - 1$$
+
 \section{Boyko (1999)/ Canetti et. al (2000)}
+
+\begin{figure}[H]
+\oneCol{0.5}
+{
+\underline{$\gamefont{G}_{\mathsf{AONT},l}^\text{leak}(\advA)$}
+
+\begin{algorithm}[H]
+$b \getsr \bits$\\
+$b' \getsr \advA^{\LRO}$\\
+\Return $(b=b')$
+\end{algorithm}
+
+\smallskip
+\underline{$\LRO(M,N,S)$}
+
+\begin{algorithm}[H]
+\If{$|M|\neq|N|$}{\Return $\bot$}  
+$(m_1,m_2\dots m_s)\gets M$\\
+$(n_1,n_2\dots n_s)\gets N$\\
+\eIf{$b=0$}{
+$y\getsr \mathsf{AONT.Transform}(m_1,m_2\dots m_s)$\\
+}{
+$y\getsr \mathsf{AONT.Transform}(n_1,n_2\dots n_s)$\\
+}
+\eIf{$(|S|\neq|y|)\lor(\mathsf{Hamm}(S)>(|y| - l))$}{\Return $\bot$}{$y\gets y\mathrel{\&} S$}
+\Return $y$
+\end{algorithm}
+}
+\end{figure}
+
+\emph{Note that $|M|$ is the length of the string $M$ in bits, $\mathrel{\&}$ is a bitwise AND and $\mathsf{Hamm}(M)$ takes the hamming weight of $M$}
+
+Then we say that the leakage adversary $\advA$ has $l$-AONT-LEAK advantage: 
+
+$$\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},l}(\advA)=2\cdot\Prob{\gamefont{G}_{\mathsf{AONT},l}^\text{leak}(\advA)} - 1$$
+
+\section{Leakage Resilience Model} 
+
+\begin{figure}[H]
+\oneCol{0.5}
+{
+\underline{$\gamefont{G}_{\mathsf{AONT},m}^\text{lr}(\advA)$}
+
+\begin{algorithm}[H]
+$b \getsr \bits$\\
+$b' \getsr \advA^{\LRO}$\\
+\Return $(b=b')$
+\end{algorithm}
+
+\smallskip
+\underline{$\LRO(M,N,C)$}
+
+\begin{algorithm}[H]
+\If{$|M|\neq|N|$}{\Return $\bot$}  
+$(m_1,m_2\dots m_s)\gets M$\\
+$(n_1,n_2\dots n_s)\gets N$\\
+\eIf{$b=0$}{
+$y\getsr \mathsf{AONT.Transform}(m_1,m_2\dots m_s)$\\
+}{
+$y\getsr \mathsf{AONT.Transform}(n_1,n_2\dots n_s)$\\
+}
+\eIf{$(C\notin\mathcal{C}_{|y|,(|y| - m)})$}{\Return $\bot$}{\Return $C(y)$}
+\end{algorithm}
+}
+\end{figure}
+
+\emph{Note that $\mathcal{C}_{n,m}$ is the set of boolean circuits taking $n$ inputs and $m$ outputs, expressed in a string in some reasonable encoding. Then, for $C\in \mathcal{C}_{n,m}$, when we run $C(S)$ for some binary string $S$ of length $n$, $C$ will take as input the bits of $S$ and return a $m$ bit long string.}
+
+Then we say that the leakage resilience adversary $\advA$ has $m$-AONT-LR advantage: 
+
+$$\textbf{Adv}^\text{aont-lr}_{\mathsf{AONT},m}(\advA)=2\cdot\Prob{\gamefont{G}_{\mathsf{AONT},m}^\text{lr}(\advA)} - 1$$
+
+\section{Relationship between Notions} 
+
+\subsection{$\mathsf{AONT.bl}$-AONT-L$\implies$AONT-IND}
+
+\begin{theorem}
+For any AONT-IND adversary $\advA$, we can construct $\mathsf{AONT.bl}$-AONT-L adversary $\advB$ such that $$\textbf{Adv}^\text{aont-ind}_{\mathsf{AONT},m}(\advA)\le\textbf{Adv}^\text{aont-ind}_{\mathsf{AONT},m}(\advB)$$
+\end{theorem}
+
+Here is the adversary (the full proof is omitted for now):
+
+\begin{figure}[H]
+\oneCol{0.5}
+{
+\underline{$\advB^\LRO$}
+
+\begin{algorithm}[H]
+$b\getsr \advA^{\procfont{SimLR}}$\\
+\Return $b$
+\end{algorithm}
+
+\underline{$\procfont{SimLR}(M,N,i)$}
+
+\begin{algorithm}[H]
+$mask\gets \epsilon$\\
+$s\gets \lceil\frac{|M|}{\mathsf{AONT.bl}}\rceil$\\
+\For{$j=1,2,\dots s$}
+{
+\eIf{$j\neq i$}{$mask\gets mask||1^\mathsf{AONT.bl}$}{$mask\gets mask||0^\mathsf{AONT.bl}$}}
+\Return $\LRO(M,N,mask)$
+\end{algorithm}
+}
+\end{figure}
 
 \section{To dos} 
 
