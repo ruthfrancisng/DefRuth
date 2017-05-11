@@ -210,10 +210,10 @@ $$\textbf{Adv}^\text{aont-lr}_{\mathsf{AONT},m}(\advA)=2\cdot\Prob{\gamefont{G}_
 
 \section{Relationship between Notions} 
 
-\subsection{$\mathsf{AONT.bl}$-AONT-L$\implies$AONT-IND}
+\subsection{$\mathsf{AONT.bl-AONT-L}\implies\schemefont{AONT-IND}$}
 
 \begin{theorem}
-For any AONT-IND adversary $\advA$, we can construct $\mathsf{AONT.bl}$-AONT-L adversary $\advB$, running in the same time and making the same number of queries, such that $$\textbf{Adv}^\text{aont-ind}_{\mathsf{AONT}}(\advA)\le\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},\mathsf{AONT.bl}}(\advB)$$
+For any $\mathsf{AONT-IND}$ adversary $\advA$, we can construct $\mathsf{AONT.bl-AONT-L}$ adversary $\advB$, running in the same time and making the same number of queries, such that $$\textbf{Adv}^\text{aont-ind}_{\mathsf{AONT}}(\advA)\le\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},\mathsf{AONT.bl}}(\advB)$$
 \end{theorem}
 
 Here is the adversary (the full proof is omitted for now):
@@ -241,10 +241,10 @@ $s\gets \lceil\frac{|M|}{\mathsf{AONT.bl}}\rceil$\\
 }
 \end{figure}
 
-\subsection{$l$-AONT-L$\implies$ $l$-AONT-LR}
+\subsection{$l\schemefont{-AONT-L}\implies l\schemefont{-AONT-LR}$}
 
 \begin{theorem}
-For any $l$-AONT-L adversary $\advA$, we can construct $l$-AONT-LR adversary $\advB$, running in the same time and making the same number of queries, such that $$\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},l}(\advA)\le\textbf{Adv}^\text{aont-lr}_{\mathsf{AONT},l}(\advB)$$
+For any $l-\schemefont{AONT-L}$ adversary $\advA$, we can construct $l-\schemefont{AONT-LR}$ adversary $\advB$, running in the same time and making the same number of queries, such that $$\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},l}(\advA)\le\textbf{Adv}^\text{aont-lr}_{\mathsf{AONT},l}(\advB)$$
 \end{theorem}
 
 Here is the adversary (the full proof is omitted for now):
@@ -273,7 +273,104 @@ $b\getsr \advA^{\procfont{SimLR}}$\\
 }
 \end{figure}
 
-\subsection{AONT-IND $\not\Rightarrow \mathsf{AONT.bl}$-AONT-L}
+\subsection{$\mathsf{AONT-IND} \not\Rightarrow \mathsf{AONT.bl-AONT-L}$}
+
+Rivest provides a construction of an AONT known as the package transform. It makes use of an arbitrary block cipher, with key of length $\schemefont{AONT.bl}$, $E : \bits^\schemefont{AONT.bl} \times \bits^\schemefont{AONT.bl}\rightarrow \schemefont{AONT.bl}$. 
+
+I modified this scheme slightly to achieve a scheme that is $\mathsf{AONT-IND}$ secure but not $\mathsf{AONT.bl-AONT-L}$ secure. 
+
+\begin{figure}[H]
+\twoCols{0.5}{0.5}
+{
+\underline{$\schemefont{AONT.Transform}(m_1,m_2,\dots m_s)$}
+
+\begin{algorithm}[H]
+\If{$\exists i.\len{m_i}\neq\schemefont{AONT.bl}$}{\Return $\bot$}
+$K\getsr \bits^\schemefont{AONT.bl}$\\
+$K'\getsr \bits^\schemefont{AONT.bl}$\\
+$m'_{s+1}\gets K'$\\
+\For{$i=1,2\dots s$}
+{
+$m'_i\gets m_i \oplus E(K',\langle i \rangle_\schemefont{AONT.bl})$\\
+$h_i\gets E(K,m'_i\oplus \langle i \rangle_\schemefont{AONT.bl})$\\
+$m'_{s+1}\gets m'_{s+1}\oplus h_i$\\
+}
+$m'_{s+1}\gets E(K,m'_{s+1})$\\
+$m'_{s+2}\gets m'_{s+1} \mathrel{\&} 1^{\frac{\mathsf{AONT.bl}}{2}}0^{\frac{\mathsf{AONT.bl}}{2}}$\\
+$m'_{s+1}\gets m'_{s+1} \mathrel{\&} 0^{\frac{\mathsf{AONT.bl}}{2}}1^{\frac{\mathsf{AONT.bl}}{2}}$\\
+\Return $(m'_1,m'_2\dots m'_s, m'_{s+1}, m'_{s+2}, K)$
+\end{algorithm}
+}
+{
+\underline{$\schemefont{AONT.Inverse}(m'_1,m'_2\dots m'_{s'})$}
+
+\begin{algorithm}[H]
+\If{$(\exists i.\len{m'_i}\neq\schemefont{AONT.bl})\lor (s' \le 2)$}{\Return $\bot$}
+$K\gets m'_{s'}$\\
+$K'\gets E^{-1}(K,m'_{s'-1} \oplus m'_{s'-2})$\\
+$s\gets s'-3$\\
+\For{$(i=1,2,\dots s)$}
+{
+$h_i\gets E(K,m'_i\oplus i)$\\
+$K'\gets K'\oplus h_i$
+}
+\For{$(i=1,2,\dots s)$}
+{
+$m_i\gets E(K',i)\oplus m'_i$\\
+}
+\Return $(m_1,m_2\dots m_{s})$
+\end{algorithm}
+}
+\end{figure} 
+
+Notice that since this construction ensures that there are $\mathsf{AONT.bl}$ bits of ``padding'' in the second and third to last blocks of the pseudo-message, an $\mathsf{AONT.bl}$ leakage adversary can just choose to not receive the padding, and still be able to compute the inverse function in full, since the padding is always zero. On the other hand, suppose that there existed a $\mathsf{AONT-IND}$ adversary against $\mathsf{AONT}$, $\advA$, then we can construct $\advB$, a PRF adversary against block cipher $E$. 
+
+
+%COMMENTS BELOW 
+
+\begin{comment}
+\begin{figure}[H]
+\oneCol{0.7}
+{
+
+\underline{$\advB$}
+
+\begin{algorithm}[H]
+$b\gets \advA^{\procfont{SimLR}}$\\
+\Return $b$
+\end{algorithm}
+\underline{$\procfont{SimLR}(M,N,i)$}
+$X\getsr \mathsf{AONT.Transform}(M)$\\
+\If{$(X=\bot)$}{\Return $\bot$}
+$s'\gets |X|$\\
+\eIf{$(i\neq s'-2)\land(i\neq s'-2)$}
+{
+$X\getsr \LRO(M,N,i)$
+\If{$X=\bot$}{\Return $\bot$}
+$(m'_1,m'_2\dots m'_{s'})\gets X$ \\
+$m'_{s'+1}\gets m'_{s'}$\\
+$m'_{s'}\gets m'_{s'-1}\mathrel{\&} 1^{\frac{\mathsf{AONT.bl}}{2}}0^{\frac{\mathsf{AONT.bl}}{2}}$\\
+$m'_{s'-1}\gets m'_{s'-1}\mathrel{\&} 0^{\frac{\mathsf{AONT.bl}}{2}}1^{\frac{\mathsf{AONT.bl}}{2}}$\\
+\Return $(m'_1,m'_2\dots m'_{s'+1})$
+}
+{
+\eIf{$i=s'-1$}
+{
+
+}
+{
+
+}
+}
+
+
+\begin{algorithm}[H]
+$b\gets \advA^{\procfont{SimLR}}$\\
+\Return $b$
+\end{algorithm}
+
+}
+\end{figure}
 
 Consider the following AONT, $\mathsf{XOR-AONT}$ with some sufficiently large block length and number of messages to prevent exhaustive searches. It is a modified version of the ``package transform'', with some padding. 
 
@@ -328,7 +425,7 @@ $m_i\gets E(K',i)\oplus m'_i$\\
 }
 \end{figure} 
 
-Then, consider the following $\mathsf{AONT.bl}-AONT-L$ adversary $\advA$ which has $\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},l}(\advA)=1$, making only 1 query and running as efficiently as the $\schemefont{AONT.Inverse}$ function.
+Then, consider the following $\mathsf{AONT.bl-AONT-L}$ adversary $\advA$ which has $\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},l}(\advA)=1$, making only 1 query and running as efficiently as the $\schemefont{AONT.Inverse}$ function.
 
 \begin{figure}[H]
 \oneCol{0.7}
@@ -354,10 +451,22 @@ $X\gets \schemefont{AONT.Inverse}(M)$ \\
 
 Notice that the hamming weight of $S$ will be $|S|-\schemefont{AONT.bl}$, and so $\LRO$ will not return $\bot$. In addition, since the bits of the AONT that were not leaked were all ``padding'' bits, the value $X$ is exactly the value that was transformed by the $\LRO$. Therefore, the adversary does not run in time much longer than the inverse function, and has advantage 1. 
 
-Now we show that this is still $\schemefont{AONT-IND}$ secure. We do this by showing that for any $\schemefont{AONT-IND}$ adversary $\advA$ against this scheme, we have an adversary $\advB$ against the package transform (call this the $\schemefont{Package}$ scheme) such that $$\textbf{Adv}^\text{aont-ind}_\mathsf{AONT}(\advA)\ge\textbf{Adv}^\text{aont-ind}_\mathsf{Package}(\advB)$$
+Now we show that this is still $\schemefont{AONT-IND}$ secure. We do this by showing that for any $\schemefont{AONT-IND}$ adversary $\advA$ taking time $t$ and making $q$ queries, we have an adversary $\advB$ against the package transform (call this the $\schemefont{Package}$ scheme) such that $$\textbf{Adv}^\text{aont-ind}_\mathsf{AONT}(\advA)\le\textbf{Adv}^\text{aont-ind}_\mathsf{Package}(\advB)$$. Further, if $\advA$ takes time $t$ and makes $q$ queries, then $\advB$ takes time $2t$ and makes $2q$ queries. 
 
+\begin{figure}[H]
+\oneCol{0.7}
+{
 
+\underline{$\advB$}
 
+\begin{algorithm}[H]
+  
+\end{algorithm}
+
+}
+\end{figure}
+
+\end{comment}
 \end{document}
 
 
