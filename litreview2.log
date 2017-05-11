@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.12.5)  9 MAY 2017 21:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.12.5)  10 MAY 2017 18:36
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1189,13 +1189,15 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 1742) has occurred while \output is active []
 
  [4]
+Overfull \hbox (31.25984pt too wide) in paragraph at lines 328--328
+ [] 
+ []
 
-LaTeX Warning: `h' float specifier changed to `ht'.
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[5] [6] (./litreview2.aux) )
+ [5]
+[6] (./litreview2.aux) )
 (\end occurred inside a group at level 1)
 
 ### simple group (level 1) entered at line 1061 ({)
@@ -1203,11 +1205,11 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 Here is how much of TeX's memory you used:
  26882 strings out of 493014
  546548 string characters out of 6133351
- 622106 words of memory out of 5000000
+ 619106 words of memory out of 5000000
  29944 multiletter control sequences out of 15000+600000
  21904 words of font info for 84 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 62i,30n,84p,10386b,18976s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,27n,84p,10386b,18949s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmbx10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/c
@@ -1232,7 +1234,7 @@ xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texl
 ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texli
 ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive
 /2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on litreview2.pdf (6 pages, 257421 bytes).
+Output written on litreview2.pdf (6 pages, 260805 bytes).
 PDF statistics:
  146 PDF objects out of 1000 (max. 8388607)
  97 compressed objects within 1 object stream

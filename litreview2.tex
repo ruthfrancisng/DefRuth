@@ -275,83 +275,95 @@ $b\getsr \advA^{\procfont{SimLR}}$\\
 
 \subsection{AONT-IND $\not\Rightarrow \mathsf{AONT.bl}$-AONT-L}
 
-For simplicity, we will use a trivial AONT to illustrate this, though this can also be done similarly with the ``package transform'' and other more practical AONTs. Consider the following AONT, $\mathsf{XOR-AONT}$ with some sufficiently large block length to prevent exhaustive searches (e.g. 256 bits)
+Consider the following AONT, $\mathsf{XOR-AONT}$ with some sufficiently large block length and number of messages to prevent exhaustive searches. It is a modified version of the ``package transform'', with some padding. 
 
-\begin{figure}[h]
-\oneCol{0.8}
+\begin{figure}[H]
+\twoCols{0.5}{0.5}
 {
-\underline{$\schemefont{XOR-AONT.Transform}(m_1,m_2,\dots m_s)$}
+\underline{$\schemefont{AONT.Transform}(m_1,m_2,\dots m_s)$}
 
 \begin{algorithm}[H]
+\If{$\exists i.\len{m_i}\neq\schemefont{AONT.bl}$}{\Return $\bot$}
+$K\getsr \bits^\schemefont{AONT.bl}$\\
+$K'\getsr \bits^\schemefont{AONT.bl}$\\
+$m'_{s+1}\gets K'$\\
 \For{$i=1,2\dots s$}
 {
-\For{$j=1,2\dots \mathsf{XOR-AONT.bl}-1$}
+$m'_i\gets m_i \oplus E(K',\langle i \rangle_\schemefont{AONT.bl})$\\
+$h_i\gets E(K,m'_i\oplus \langle i \rangle_\schemefont{AONT.bl})$\\
+$m'_{s+1}\gets m'_{s+1}\oplus h_i$\\
+}
+$b_1||b_2\dots ||b_\schemefont{AONT.bl}\gets m'_{s+1}$\\
+\For{$i=1,2\dots s$}
 {
-$n_{i,j}\getsr\bits^{\mathsf{XOR-AONT.bl}}$
+$m'_{s+i}\getsr\bits^\schemefont{AONT.bl}$\\
+$m'_{s+i}\gets m'_{s+i} \mathrel{\&} 0^\schemefont{AONT.bl-1}b_i$\\
 }
-$n_{i,\mathsf{XOR-AONT.bl}}\getsr m_i \oplus n_{i,1} \oplus n_{i,2} \dots \oplus n_{i,\mathsf{XOR-AONT.bl}}$
-}
-\Return $(n_{1,1},n_{1,2}\dots n_{1,\mathsf{XOR-AONT.bl}},n_{2,1},n_{2,2}\dots n_{s,\mathsf{XOR-AONT.bl}})$
+\Return $(m'_1,m'_2\dots m'_{2s-1}, m'_{2s}, K)$
 \end{algorithm}
-
-\underline{$\schemefont{XOR-AONT.Inverse}(m'_1,m'_2\dots m'_{s'})$}
+}
+{
+\underline{$\schemefont{AONT.Inverse}(m'_1,m'_2\dots m'_{s'})$}
 
 \begin{algorithm}[H]
-$(n_{1,1},n_{1,2}\dots n_{1,\mathsf{XOR-AONT.bl}},n_{2,1},n_{2,2}\dots n_{s,\mathsf{XOR-AONT.bl}})\gets (m'_1,m'_2\dots m'_{s'})$\\
+\If{$(\exists i.\len{m'_i}\neq\schemefont{AONT.bl})\lor (s' \le 2)$}{\Return $\bot$}
 \For{$i=1,2,\dots s$}
 {
-$m_i\gets n_{i,1}\oplus n_{i,2}\oplus \dots \oplus n_{i,\mathsf{XOR-AONT.bl}}$
+$b_i \gets m_{s+i} \mod 2$\\
 }
-\Return $(m_1,m_2\dots m_s)$
+$K'\gets b_1||b_2\dots ||b_\schemefont{AONT.bl}$\\
+$K\gets m'_{s'}$\\
+$s\gets s'-2$\\
+\For{$(i=1,2,\dots s)$}
+{
+$h_i\gets E(K,m'_i\oplus i)$\\
+$K'\gets K'\oplus h_i$
+}
+\For{$(i=1,2,\dots s)$}
+{
+$m_i\gets E(K',i)\oplus m'_i$\\
+}
+\Return $(m_1,m_2\dots m_{s})$
 \end{algorithm}
 }
 \end{figure} 
 
-Then, we modify this to the following, with the same block length: 
+Then, consider the following $\mathsf{AONT.bl}-AONT-L$ adversary $\advA$ which has $\textbf{Adv}^\text{aont-leak}_{\mathsf{AONT},l}(\advA)=1$, making only 1 query and running as efficiently as the $\schemefont{AONT.Inverse}$ function.
 
-\begin{figure}[h]
-\oneCol{0.8}
+\begin{figure}[H]
+\oneCol{0.7}
 {
-\underline{$\schemefont{MOD-XOR-AONT.Transform}(m_1,m_2,\dots m_s)$}
 
-\begin{algorithm}[H]
-\For{$i=1,2\dots s$}
-{
-\For{$j=1,2\dots \mathsf{MOD-XOR-AONT.bl}-1$}
-{
-$n_{i,j}\getsr\bits^{\mathsf{MOD-XOR-AONT.bl}}$
-}
-$n_{i,\mathsf{MOD-XOR-AONT.bl}}\getsr m_i \oplus n_{i,1} \oplus n_{i,2} \dots \oplus n_{i,\mathsf{MOD-XOR-AONT.bl}}$
-}
-$(m'_1,m'_2,\dots m'_{s'})  \gets (n_{1,1},n_{1,2}\dots n_{1,\mathsf{MOD-XOR-AONT.bl}},n_{2,1},n_{2,2}\dots n_{s,\mathsf{MOD-XOR-AONT.bl}})$\\
-\For{$i=1,2\dots \mathsf{MOD-XOR-AONT.bl}$}
-{
-$b_i\gets m'_i \mathrel{\&} (0^{\mathsf{MOD-XOR-AONT.bl}-1}1)$\\
-$m'_i\gets m'_i \mathrel{\&} (1^{\mathsf{MOD-XOR-AONT.bl}-1}0)$\\
-}
-$m'_0\gets b_1||b_2\dots b_\mathsf{MOD-XOR-AONT.bl}$\\
-\Return $(m'_0,m'_1,m'_2,\dots m'_{s'})$
-\end{algorithm}
-
-\underline{$\schemefont{MOD-XOR-AONT.Inverse}(m'_0,m'_1\dots m'_{s'})$}
+\underline{$\advA$}
 
 \begin{algorithm}[H]
-$b_1||b_2\dots b_\mathsf{MOD-XOR-AONT.bl}\gets m'_0$\\
-\For{$i=1,2\dots \mathsf{MOD-XOR-AONT.bl}$}
+$S\gets 0^{256\cdot\schemefont{AONT.bl}}$\\
+\For{$i=1,2,\dots \schemefont{AONT.bl}$}
 {
-$b_i\gets b_i \mathrel{\&} (0^{\mathsf{MOD-XOR-AONT.bl}-1}1)$\\
-$m'_i\gets m'_i \oplus b_i$\\
+$S\gets S||0^{\schemefont{AONT.bl}-1}1$\\
 }
-$(n_{1,1},n_{1,2}\dots n_{1,\mathsf{MOD-XOR-AONT.bl}},n_{2,1},n_{2,2}\dots n_{s,\mathsf{MOD-XOR-AONT.bl}})\gets (m'_1,m'_2\dots m'_{s'})$\\
-\For{$i=1,2,\dots s$}
-{
-$m_i\gets n_{i,1}\oplus n_{i,2}\oplus \dots \oplus n_{i,\mathsf{XOR-AONT.bl}}$
-}
-\Return $(m_1,m_2\dots m_s)$
+$S\gets S||1^{\schemefont{AONT.bl}}$\\
+
+$M\gets \LRO(0^{256\cdot\schemefont{AONT.bl}},1^{256\cdot\schemefont{AONT.bl}},S)$\\
+$X\gets \schemefont{AONT.Inverse}(M)$ \\
+\eIf{$M=0^{256\cdot\schemefont{AONT.bl}}$}{\Return 0}{\Return 1}
 \end{algorithm}
+
 }
-\end{figure} 
+\end{figure}
+
+Notice that the hamming weight of $S$ will be $|S|-\schemefont{AONT.bl}$, and so $\LRO$ will not return $\bot$. In addition, since the bits of the AONT that were not leaked were all ``padding'' bits, the value $X$ is exactly the value that was transformed by the $\LRO$. Therefore, the adversary does not run in time much longer than the inverse function, and has advantage 1. 
+
+Now we show that this is still $\schemefont{AONT-IND}$ secure. We do this by showing that for any $\schemefont{AONT-IND}$ adversary $\advA$ against this scheme, we have an adversary $\advB$ against the package transform (call this the $\schemefont{Package}$ scheme) such that $$\textbf{Adv}^\text{aont-ind}_\mathsf{AONT}(\advA)\ge\textbf{Adv}^\text{aont-ind}_\mathsf{Package}(\advB)$$
 
 
-PACKAGE TRANSFORM IS NOT LEAKAGE RESISTANT
+
 \end{document}
+
+
+
+
+
+
+
+
