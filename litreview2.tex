@@ -274,14 +274,13 @@ Consider the package transform proposed by Rivest, denoted $\mathsf{Package}$. N
 \underline{$\schemefont{Package.Transform}(m_1,m_2,\dots m_s)$}
 
 \begin{algorithm}[H]
-\If{$\exists i.\len{m_i}\neq\schemefont{Package.bl}$}{\Return $\bot$}
 $K\getsr \bits^\schemefont{Package.bl}$\\
 $K'\getsr \bits^\schemefont{Package.bl}$\\
 $m'_{s+1}\gets K'$\\
 \For{$i=1,2\dots s$}
 {
-$m'_i\gets m_i \oplus E(K',\langle i \rangle_\schemefont{Package.bl})$\\
-$h_i\gets E(K,m'_i\oplus \langle i \rangle_\schemefont{Package.bl})$\\
+$m'_i\gets m_i \oplus E(K',\langle i \rangle)$\\
+$h_i\gets E(K,m'_i\oplus \langle i \rangle)$\\
 $m'_{s+1}\gets m'_{s+1}\oplus h_i$\\
 }
 \Return $(m'_1,m'_2\dots m'_s, m'_{s+1}, K)$
@@ -291,18 +290,18 @@ $m'_{s+1}\gets m'_{s+1}\oplus h_i$\\
 \underline{$\schemefont{Package.Inverse}(m'_1,m'_2\dots m'_{s'})$}
 
 \begin{algorithm}[H]
-\If{$(\exists i.\len{m'_i}\neq\schemefont{Package.bl})\lor (s' \le 2)$}{\Return $\bot$}
+\If{$(s' \le 2)$}{\Return $\bot$}
 $K\gets m'_{s'}$\\
 $K'\gets m'_{s'-1}$\\
 $s\gets s'-2$\\
 \For{$(i=1,2,\dots s)$}
 {
-$h_i\gets E(K,m'_i\oplus i)$\\
+$h_i\gets E(K,m'_i\oplus \langle i\rangle )$\\
 $K'\gets K'\oplus h_i$
 }
 \For{$(i=1,2,\dots s)$}
 {
-$m_i\gets E(K',i)\oplus m'_i$\\
+$m_i\gets E(K',\langle i\rangle)\oplus m'_i$\\
 }
 \Return $(m_1,m_2\dots m_{s})$
 \end{algorithm}

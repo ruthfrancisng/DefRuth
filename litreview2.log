@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.12.5)  27 MAY 2017 00:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.12.5)  30 MAY 2017 09:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1208,12 +1208,12 @@ oted $[]$. Note that $[] =
  []
 
 
-Overfull \hbox (31.25984pt too wide) in paragraph at lines 309--309
+Overfull \hbox (31.25984pt too wide) in paragraph at lines 308--308
  [] 
  []
 
 
-Overfull \hbox (20.3642pt too wide) in paragraph at lines 312--313
+Overfull \hbox (20.3642pt too wide) in paragraph at lines 311--312
 []$ \OT1/cmr/m/n/10.95 is as se-cure as OAEP. We now present a $[]$
  []
 
@@ -1225,7 +1225,7 @@ Overfull \hbox (20.3642pt too wide) in paragraph at lines 312--313
 Here is how much of TeX's memory you used:
  26880 strings out of 493014
  546527 string characters out of 6133351
- 617104 words of memory out of 5000000
+ 616106 words of memory out of 5000000
  29943 multiletter control sequences out of 15000+600000
  21736 words of font info for 83 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
@@ -1254,7 +1254,7 @@ live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texli
 ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive
 /2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/
 2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb>
-Output written on litreview2.pdf (6 pages, 253336 bytes).
+Output written on litreview2.pdf (6 pages, 253042 bytes).
 PDF statistics:
  146 PDF objects out of 1000 (max. 8388607)
  97 compressed objects within 1 object stream
